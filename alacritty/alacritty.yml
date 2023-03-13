@@ -1,0 +1,27 @@
+import:
+  - ~/.config/alacritty/os-settings.yml
+env:
+  TERM: alacritty
+window:
+  resize_increments: true
+  startup_mode: Maximized
+  transparent_background_colors: true
+  opacity: 0.7
+  padding:
+    x: 16
+    y: 16
+font:
+  font:
+    normal:
+      family: SauceCodePro Nerd Font
+      style: Regular
+    bold:
+      family: SauceCodePro Nerd Font
+      style: Bold
+    italic:
+      family: SauceCodePro Nerd Font
+      style: Italic
+  size: 16
+key_bindings:
+  # M-w は tmux 上でコピーに割り当てたい
+  - { key: W,              mods: Command,                    action: None                  }
