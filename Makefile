@@ -44,6 +44,10 @@ rust:
 kubernetes:
 	${PWD}/kubernetes/setup.sh
 
+.PHONY: k6
+k6:
+	${PWD}/k6/setup.sh
+
 .PHONY: aws
 aws:
 	${PWD}/aws/setup.sh
@@ -59,4 +63,4 @@ zsh:
 	. ${HOME}/.zshrc
 
 .PHONY: all
-all: $(PKG_MGR) alacritty starship tmux zed java scala kubernetes aws terraform $(notdir $(SHELL))
+all: $(PKG_MGR) alacritty starship tmux zed java scala kubernetes k6 aws terraform $(notdir $(SHELL))
