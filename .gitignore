@@ -3,3 +3,6 @@
 
 alacritty/alacritty.yml.example
 zsh/.zshrc.bkup
+emacs/.emacs.d/themes
+Brewfile.lock.json
+*.el~

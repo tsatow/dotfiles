@@ -1,8 +1,10 @@
 OS=$(shell uname)
 ifeq ($(OS),Darwin)
+	# MacOSの場合
 	SHELL=/bin/zsh
 	PKG_MGR=brew
 else
+	# Fedoraの場合
 	SHELL=/bin/bash
 	PKG_MGR=dnf
 endif
@@ -17,15 +19,15 @@ alacritty:
 	${PWD}/alacritty/setup.sh
 
 .PHONY: starship
-starship: 
+starship:
 	${PWD}/starship/setup.sh
 
 .PHONY: tmux
-tmux: 
+tmux:
 	ln -sf ${PWD}/tmux/.tmux.conf ${HOME}/.tmux.conf
 
 .PHONY: zed
-zed: 
+zed:
 	${PWD}/zed/setup.sh
 
 .PHONY: java
@@ -36,9 +38,17 @@ java:
 scala:
 	${PWD}/scala/setup.sh
 
+.PHONY: haskell
+haskell:
+	${PWD}/haskell/setup.sh
+
 .PHONY: rust
 rust:
 	${PWD}/rust/setup.sh
+
+.PHONY: python
+python:
+	${PWD}/python/setup.sh
 
 .PHONY: kubernetes
 kubernetes:
@@ -62,5 +72,18 @@ zsh:
 	ln -sf ${PWD}/zsh/.zshrc ${HOME}/.zshrc
 	. ${HOME}/.zshrc
 
+.PHONY: scripts
+scripts:
+	if [ -e ${HOME}/.local/bin ]; then mkdir -p ${HOME}/.local/bin; fi
+	ln -sf ${PWD}/scripts/* ${HOME}/.local/bin
+
+.PHONY: emacs
+emacs:
+	mkdir -p ${PWD}/emacs/.emacs.d/themes
+	curl -o ${PWD}/emacs/.emacs.d/themes/color-theme-tomorrow.el -L https://raw.githubusercontent.com/chriskempson/tomorrow-theme/master/GNU%20Emacs/color-theme-tomorrow.el
+	curl -o ${PWD}/emacs/.emacs.d/themes/tomorrow-night-blue-theme.el -L https://raw.githubusercontent.com/chriskempson/tomorrow-theme/master/GNU%20Emacs/tomorrow-night-blue-theme.el
+	# シンボリックリンクだと読み込まれない
+	cp -rf ${PWD}/emacs/.emacs.d ${HOME}
+
 .PHONY: all
-all: $(PKG_MGR) alacritty starship tmux zed java scala kubernetes k6 aws terraform $(notdir $(SHELL))
+all: $(PKG_MGR) alacritty starship tmux zed java scala haskell rust scripts kubernetes k6 aws terraform emacs $(notdir $(SHELL))
