@@ -1,0 +1,3 @@
+[shell]
+args = ["-l", "-c", "tmux a -t 0 || tmux"]
+program = "/bin/zsh"
