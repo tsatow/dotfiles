@@ -4,17 +4,17 @@ import = ["~/.config/alacritty/os-settings.toml"]
 TERM = "alacritty"
 
 [font]
-size = 16
+size = 16.0
 
-[font.font.bold]
+[font.bold]
 family = "SauceCodePro Nerd Font"
 style = "Bold"
 
-[font.font.italic]
+[font.italic]
 family = "SauceCodePro Nerd Font"
 style = "Italic"
 
-[font.font.normal]
+[font.normal]
 family = "SauceCodePro Nerd Font"
 style = "Regular"
 
@@ -27,8 +27,10 @@ mods = "Command"
 opacity = 0.7
 resize_increments = true
 startup_mode = "Maximized"
-transparent_background_colors = true
 
 [window.padding]
 x = 16
 y = 16
+
+[colors]
+transparent_background_colors = true
