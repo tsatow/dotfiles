@@ -7,15 +7,15 @@ TERM = "alacritty"
 size = 16.0
 
 [font.bold]
-family = "SauceCodePro Nerd Font"
+family = "Source Code Pro"
 style = "Bold"
 
 [font.italic]
-family = "SauceCodePro Nerd Font"
+family = "Source Code Pro"
 style = "Italic"
 
 [font.normal]
-family = "SauceCodePro Nerd Font"
+family = "Source Code Pro"
 style = "Regular"
 
 [[keyboard.bindings]]
