@@ -12,3 +12,6 @@
 	cm = commit
 	push-current = !git push origin $(git branch --show-current)
 	push-current-force = !git push -f origin $(git branch --show-current)
+
+[pull]
+    rebase = false
