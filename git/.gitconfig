@@ -1,0 +1,14 @@
+[ghq]
+	root = ~/src
+[user]
+	name = tsatow
+	email = <FIXEMAIL>
+[alias]
+	st = status
+	ss = stash
+	br = branch
+	co = !git switch -h
+	sw = switch
+	cm = commit
+	push-current = !git push origin $(git branch --show-current)
+	push-current-force = !git push -f origin $(git branch --show-current)

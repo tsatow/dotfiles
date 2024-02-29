@@ -85,5 +85,9 @@ emacs:
 	# シンボリックリンクだと読み込まれない
 	cp -rf ${PWD}/emacs/.emacs.d ${HOME}
 
+.PHONY: git
+git:
+	${PWD}/git/setup.sh
+
 .PHONY: all
-all: $(PKG_MGR) alacritty starship tmux zed java scala haskell rust scripts kubernetes k6 aws terraform emacs $(notdir $(SHELL))
+all: $(PKG_MGR) alacritty starship tmux zed java scala haskell rust scripts kubernetes k6 aws terraform emacs git $(notdir $(SHELL))
