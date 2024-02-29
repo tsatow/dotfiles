@@ -7,13 +7,12 @@ select PROFILE in $PROFILES
 do
     # SSOセッションが有効期限切れであれば再度ログインする
     if ! aws ecr get-login-password --profile "$PROFILE" --region ap-northeast-1 1>/dev/null; then
+        echo 1
         aws sso login --profile "$PROFILE"
     fi
     break
 done
-
-REGION=$(aws configure get region --profile $PROFILE)
-
+REGION=$(aws configure get region --profile "$PROFILE")
 # zle widgetにBUFFERを渡すもっと良い方法ないですか？
 echo "export AWS_PROFILE=$PROFILE AWS_DEFAULT_PROFILE=$PROFILE AWS_REGION=$REGION;" > /tmp/ZSH_BUFFER
 tmux send-keys "C-["
