@@ -11,7 +11,9 @@
 	sw = switch
 	cm = commit
 	push-current = !git push origin $(git branch --show-current)
+	psc = push-current
 	push-current-force = !git push -f origin $(git branch --show-current)
-
+    pull-current = !git pull origin $(git branch --show-current)
+    plc = pull-current
 [pull]
     rebase = false
