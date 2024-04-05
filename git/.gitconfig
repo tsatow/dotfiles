@@ -15,5 +15,6 @@
 	push-current-force = !git push -f origin $(git branch --show-current)
     pull-current = !git pull origin $(git branch --show-current)
     plc = pull-current
+    ft = fetch
 [pull]
     rebase = false
