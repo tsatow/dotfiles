@@ -29,6 +29,7 @@
            (split-string (shell-command-to-string "ghq list --full-path")))))
   :bind-keymap
   ("C-c p" . projectile-command-map))
+(setq projectile-switch-project-action 'neotree-projectile-action)
 
 (leaf font-for-gui
   :doc "Use Nerd & Adjust font size"
@@ -72,6 +73,7 @@
   :bind-keymap
   :custom
   (setq neo-theme 'classic))
+(global-set-key [f8] 'neotree-toggle)
 
 
 (use-package counsel
@@ -79,7 +81,7 @@
 
 (use-package ivy
   :ensure t
-  :bind (("C-c u" . ivy-resume))
+  :bind (("C-;" . ivy-resume))
   :config
   (ivy-mode)
 
@@ -141,8 +143,6 @@
   (global-set-key (kbd "C-c C-M-<") 'mc/mark-all-word-like-this))
 
 ;; markdownコマンドが必須
-;; `C-c C-c l`でEmacs内でlive preview
-;; `C-c C-c p`でブラウザでlive preview
 (use-package markdown-mode
   :ensure t)
 (use-package markdown-preview-mode

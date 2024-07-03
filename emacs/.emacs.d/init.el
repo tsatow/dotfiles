@@ -41,7 +41,7 @@
 (setq inhibit-startup-message t)
 
 ;;; スクロールバーを非表示
-(scroll-bar-mode -1) 
+(scroll-bar-mode -1)
 
 ;;; ツールバーを非表示
 (tool-bar-mode -1)
@@ -71,7 +71,7 @@
 ;;; 現在行に色をつける
 (global-hl-line-mode 1)
 ;; VSCodeのtomorrow-night-blueテーマでの<div class="current-line">のスタイルから拝借
-(set-face-background 'hl-line "#00346e") 
+(set-face-background 'hl-line "#00346e")
 
 ;;; 時間を表示
 (display-time)
@@ -90,7 +90,7 @@
 (keyboard-translate ?\C-h ?\C-?)
 
 ;;; helpをC-?に割り当て
-(global-set-key (kbd "C-?") 'help-for-help) 
+(global-set-key (kbd "C-?") 'help-for-help)
 
 ;;; バッファ末尾に余計な改行コードを防ぐための設定
 (setq next-line-add-newlines nil)
