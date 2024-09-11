@@ -67,6 +67,7 @@
 
 ;;; 行番号表示
 (global-display-line-numbers-mode)
+(setq linum-format "%4d ")
 
 ;;; 現在行に色をつける
 (global-hl-line-mode 1)

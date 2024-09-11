@@ -49,4 +49,19 @@ The description of ARG is in `neo-buffer--execute'."
   (bind-key "a" 'neotree-hidden-file-toggle neotree-mode-map)
   (bind-key "<left>" 'neotree-select-up-node neotree-mode-map))
 
+;; default
+;;  C-c C-n 作成
+;;  C-c C-d 削除
+;;  C-c C-r リネーム
+;;  C-c C-p コピー
+;; concise
+;;  C ルートディレクトリ変更
+;;  c 作成
+;;  + 作成
+;;  d 削除
+;;  r リネーム
+;;  e エンター
+;; https://tam5917.hatenablog.com/entry/2024/07/07/154024
+(setq neo-keymap-style 'concise)
+
 (provide 'conf-neotree)

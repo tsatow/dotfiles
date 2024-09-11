@@ -51,7 +51,7 @@
   (default-font-family . "FuraCode Nerd Font")
   :config
   (set-fonts jp-font-family)
-  (set-face-attribute 'default nil :family jp-font-family :height 140))
+  (set-face-attribute 'default nil :family jp-font-family :height 180))
 
 (use-package all-the-icons
   :ensure t
@@ -84,7 +84,21 @@
   :bind (("C-;" . ivy-resume))
   :config
   (ivy-mode)
-
+  ;; 
+  (global-set-key (kbd "C-s") 'swiper-isearch)
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file) ;; TODO projectileとの連携どうするか
+  (global-set-key (kbd "M-y") 'counsel-yank-pop)
+  (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+  (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+  (global-set-key (kbd "<f1> l") 'counsel-find-library)
+  (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+  (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+  (global-set-key (kbd "<f2> j") 'counsel-set-variable)
+  (global-set-key (kbd "C-x b") 'ivy-switch-buffer)
+  (global-set-key (kbd "C-c v") 'ivy-push-view)
+  (global-set-key (kbd "C-c V") 'ivy-pop-view)
+  (global-set-key (kbd "C-c J") 'counsel-file-jump)
   ;;(bind-chords
   ;; :map ivy-minibuffer-map
   ;; ("m," . ivy-beginning-of-buffer)

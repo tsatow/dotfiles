@@ -9,6 +9,7 @@ cask "font-fira-code"
 cask "zed"
 cask "visual-studio-code"
 cask "obsidian"
+cask "jdk-mission-control"
 brew "peco"
 brew "git"
 brew "tig"
@@ -32,3 +33,5 @@ brew "rust-analyzer"
 brew "mysql"
 brew "hashicorp/tap/vault"
 brew "aws2-wrap"
+brew "llvm" # for Scala Native
+brew "bdw-gc" # for Scala Native
