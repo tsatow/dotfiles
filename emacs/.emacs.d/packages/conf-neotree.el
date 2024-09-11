@@ -1,3 +1,8 @@
+;; treeバッファに行番号を表示しない
+(add-hook 'neotree-mode-hook
+          #'(lambda ()
+              (display-line-numbers-mode -1)))
+
 (defun neotree-project-dir ()
    "Open NeoTree using the git root."
     (interactive)
@@ -63,5 +68,18 @@ The description of ARG is in `neo-buffer--execute'."
 ;;  e エンター
 ;; https://tam5917.hatenablog.com/entry/2024/07/07/154024
 (setq neo-keymap-style 'concise)
+
+;; よく使うディレクトリへのショートカット
+(defun open-dotfiles-dir ()
+  (interactive)
+  (neotree-dir "~/src/github.com/tsatow/dotfiles"))
+(defun open-reading-dir ()
+  (interactive)
+  (neotree-dir "~/src/github.com/tsatow/reading"))
+(defun open-memo-dir ()
+  (interactive)
+  (neotree-dir "~/memo"))
+open-memo-dir
+
 
 (provide 'conf-neotree)
