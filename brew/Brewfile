@@ -30,7 +30,7 @@ brew "emacs-mac", args: ["with-modern-icon", "with-imagemagic"]
 brew "stack"
 brew "markdown"
 brew "rust-analyzer"
-brew "mysql"
+brew "mysql-client@8.0"
 brew "hashicorp/tap/vault"
 brew "aws2-wrap"
 brew "llvm" # for Scala Native

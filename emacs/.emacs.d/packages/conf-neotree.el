@@ -9,7 +9,7 @@
     (let ((project-dir (projectile-project-root))
           (file-name (buffer-file-name)))
       (neotree-toggle)
-      (if project-dir
+n      (if project-dir
           (if (neo-global--window-exists-p)
               (progn
                 (neotree-dir project-dir)
@@ -69,6 +69,9 @@ The description of ARG is in `neo-buffer--execute'."
 ;; https://tam5917.hatenablog.com/entry/2024/07/07/154024
 (setq neo-keymap-style 'concise)
 
+;; 隠しファイルを表示する
+(setq neo-show-hidden-files t)
+
 ;; よく使うディレクトリへのショートカット
 (defun open-dotfiles-dir ()
   (interactive)
@@ -79,7 +82,6 @@ The description of ARG is in `neo-buffer--execute'."
 (defun open-memo-dir ()
   (interactive)
   (neotree-dir "~/memo"))
-open-memo-dir
 
 
 (provide 'conf-neotree)

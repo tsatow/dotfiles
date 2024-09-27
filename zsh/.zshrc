@@ -1,6 +1,6 @@
 # 保管の設定
-autoload -Uz compinit
-compinit
+autoload -Uz compinit && compinit
+autoload -U +X bashcompinit && bashcompinit
 
 # asdf
 . /opt/homebrew/opt/asdf/libexec/asdf.sh
@@ -65,3 +65,4 @@ function accept-buffer {
 }
 zle -N accept-buffer
 bindkey '^[' accept-buffer
+export PATH="/opt/homebrew/opt/mysql-client@8.0/bin:$PATH"

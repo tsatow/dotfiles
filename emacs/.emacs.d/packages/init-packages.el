@@ -170,4 +170,10 @@
 (use-package toml-mode
   :ensure t)
 
+;; org-mode
+(org-babel-do-load-languages
+  'org-babel-load-languages
+  '((emacs-lisp :tangle ./init.el . t)
+    (C . t)))
+
 (provide 'init-packages)
