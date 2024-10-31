@@ -2,6 +2,7 @@
 email=$(git config --global --get user.email)
 if [ -z "$email" ]; then
     read -p "INPUT YOUR GITHUB EMAIL ADDRESS: " email
+    git config --global user.email "$email"
 fi
 
 (cat $(pwd)/git/.gitconfig | sed "s/<FIXEMAIL>/$email/g") > ~/.gitconfig
