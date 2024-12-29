@@ -4,7 +4,9 @@
   (load-theme 'sanityinc-tomorrow-blue t))
 
 (use-package open-junk-file
-  :ensure t)
+  :ensure t
+  :config
+  (setq open-junk-file-format "~/memo/junk/%Y/%m/%d-%H%M%S."))
 
 (use-package treesit-auto
   :ensure t

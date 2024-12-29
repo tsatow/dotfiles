@@ -66,3 +66,4 @@ function accept-buffer {
 zle -N accept-buffer
 bindkey '^[' accept-buffer
 export PATH="/opt/homebrew/opt/mysql-client@8.0/bin:$PATH"
+export PATH="/opt/homebrew/opt/php@8.1/bin:$PATH"

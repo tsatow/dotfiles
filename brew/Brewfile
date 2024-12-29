@@ -1,5 +1,4 @@
 tap "homebrew/bundle"
-tap "homebrew/cask-fonts"
 tap "scalacenter/bloop"
 tap "railwaycat/emacsmacport"
 tap "hashicorp/tap"
@@ -36,3 +35,4 @@ brew "aws2-wrap"
 brew "llvm" # for Scala Native
 brew "bdw-gc" # for Scala Native
 brew "the_silver_searcher"
+brew "zig"
