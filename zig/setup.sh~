@@ -1,0 +1,4 @@
+ghq get https://github.com/zigtools/zls
+cd $(ghq root)/github.com/zigtools/zls
+git checkout 0.14.0
+zig build -Doptimize=ReleaseSafe

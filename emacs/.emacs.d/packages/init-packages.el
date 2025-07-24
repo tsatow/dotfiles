@@ -32,6 +32,12 @@
   :bind-keymap
   ("C-c p" . projectile-command-map))
 (setq projectile-switch-project-action 'neotree-projectile-action)
+;; emergeのキーバインドとバッティングしてるっぽいが今の所emergeを使っていないのでヨシ
+(global-set-key (kbd "C-]") 'projectile-switch-project)
+
+
+;; need another one for python stuff, since this gets re-bound
+(global-set-key (kbd "C-c C-p") 'neotree-project-dir)
 
 (leaf font-for-gui
   :doc "Use Nerd & Adjust font size"
@@ -170,6 +176,9 @@
   :ensure t)
 
 (use-package toml-mode
+  :ensure t)
+
+(use-package zig-mode
   :ensure t)
 
 ;; org-mode

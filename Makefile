@@ -89,5 +89,9 @@ emacs:
 git:
 	${PWD}/git/setup.sh
 
+.PHONY: zig
+zig:
+	${PWD}/zig/setup.sh
+
 .PHONY: all
-all: $(PKG_MGR) alacritty starship tmux zed java scala haskell rust scripts kubernetes k6 aws terraform emacs git $(notdir $(SHELL))
+all: $(PKG_MGR) alacritty starship tmux zed java scala haskell rust scripts kubernetes k6 aws terraform emacs git zig $(notdir $(SHELL))
