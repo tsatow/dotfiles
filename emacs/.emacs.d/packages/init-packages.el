@@ -92,7 +92,7 @@
   :bind (("C-;" . ivy-resume))
   :config
   (ivy-mode)
-  ;; 
+  ;;
   (global-set-key (kbd "C-s") 'swiper-isearch)
   (global-set-key (kbd "M-x") 'counsel-M-x)
   (global-set-key (kbd "C-x C-f") 'counsel-find-file) ;; TODO projectileとの連携どうするか
@@ -164,6 +164,36 @@
   (global-set-key (kbd "C-M-<") 'mc/mark-previous-word-like-this)
   (global-set-key (kbd "C-c C-M-<") 'mc/mark-all-word-like-this))
 
+;; Error (use-package): Cannot load which-key
+;(use-package which-key
+;    :config
+;    (which-key-mode))
+
+;;;;;; language ;;;;;;
+
+;;Error (use-package): Cannot load dap-mode
+;(use-package dap-mode)
+;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+
+(use-package lsp-mode
+  :init
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  (setq lsp-keymap-prefix "C-c l")
+  :commands lsp
+  :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+         (zig-mode . lsp)
+         ;; if you want which-key integration
+         (lsp-mode . lsp-enable-which-key-integration)))
+(setq lsp-auto-guess-root t)
+;; optionally
+(use-package lsp-ui
+  :ensure t)
+;; if you are helm user
+;(use-package helm-lsp :commands helm-lsp-workspace-symbol)
+;; if you are ivy user
+;(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+;(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+
 ;; markdownコマンドが必須
 (use-package markdown-mode
   :ensure t)
@@ -180,6 +210,8 @@
 
 (use-package zig-mode
   :ensure t)
+(setq lsp-zig-zls-executable "~/.local/bin/zls")
+(setq lsp-zig-zig-exe-path "/opt/homebrew/bin/zig")
 
 ;; org-mode
 (org-babel-do-load-languages
