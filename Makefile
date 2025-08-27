@@ -18,6 +18,10 @@ brew:
 alacritty:
 	${PWD}/alacritty/setup.sh
 
+.PHONY: ghostty
+ghostty:
+	${PWD}/ghostty/setup.sh
+
 .PHONY: starship
 starship:
 	${PWD}/starship/setup.sh
