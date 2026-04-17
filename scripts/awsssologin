@@ -6,9 +6,32 @@ PROFILES=$(cat ~/.aws/config | grep -E '\[\s*profile\s+(.+)\]' | sed -r 's/\[\s*
 select PROFILE in $PROFILES
 do
     # SSOセッションが有効期限切れであれば再度ログインする
-    if ! aws ecr get-login-password --profile "$PROFILE" --region ap-northeast-1 1>/dev/null; then
-        echo 1
+    if ! aws sts get-caller-identity --profile "$PROFILE" >/dev/null 2>&1; then
         aws sso login --profile "$PROFILE"
+        # aws sso loginで開かれたブラウザの承認ページ(device.sso.*.amazonaws.com等)を自動で閉じる
+        # osascriptはmacOS専用なので、存在しない環境(Linux等)ではスキップ
+        if command -v osascript >/dev/null 2>&1; then
+            osascript <<'APPLESCRIPT' >/dev/null 2>&1 || true
+if application "Google Chrome" is running then
+    tell application "Google Chrome"
+        set tabsToClose to {}
+        repeat with w in windows
+            repeat with t in (tabs of w)
+                set u to URL of t as string
+                if u contains "device.sso" or u contains "awsapps.com/start" or u contains "oauth-auth-complete" then
+                    set end of tabsToClose to t
+                end if
+            end repeat
+        end repeat
+        repeat with t in tabsToClose
+            try
+                close t
+            end try
+        end repeat
+    end tell
+end if
+APPLESCRIPT
+        fi
     fi
     break
 done

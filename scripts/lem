@@ -1,0 +1,2 @@
+#/bin/zsh
+/Users/tsatow/src/github.com/lem-project/lem/lem -i ncurses
