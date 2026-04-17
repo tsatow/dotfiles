@@ -5,8 +5,48 @@ PROFILES=$(cat ~/.aws/config | grep -E '\[\s*profile\s+(.+)\]' | sed -r 's/\[\s*
 
 select PROFILE in $PROFILES
 do
-    # SSOセッションが有効期限切れであれば再度ログインする
-    if ! aws sts get-caller-identity --profile "$PROFILE" >/dev/null 2>&1; then
+    # SSOトークンキャッシュ(~/.aws/sso/cache/)のexpiresAtを直接確認する。
+    # `aws sts get-caller-identity` は ~/.aws/cli/cache/ のAssumeRole結果に
+    # 引きずられてSSOトークン切れを見逃すことがあるため(SDK側はこのキャッシュを見ない)。
+    if ! python3 - "$PROFILE" <<'PY' 2>/dev/null
+import configparser, hashlib, json, os, sys
+from datetime import datetime, timezone, timedelta
+from pathlib import Path
+
+def resolve_sso_key(cfg, profile, seen=None):
+    seen = seen or set()
+    if profile in seen:
+        return None
+    seen.add(profile)
+    section = 'default' if profile == 'default' else f'profile {profile}'
+    if section not in cfg:
+        return None
+    sec = cfg[section]
+    if sec.get('sso_session'):
+        return sec['sso_session']
+    if sec.get('sso_start_url'):
+        return sec['sso_start_url']
+    if sec.get('source_profile'):
+        return resolve_sso_key(cfg, sec['source_profile'], seen)
+    return None
+
+cfg = configparser.ConfigParser()
+cfg.read(os.path.expanduser('~/.aws/config'))
+key = resolve_sso_key(cfg, sys.argv[1])
+if key is None:
+    # 非SSOプロファイル: 再ログイン不要扱い
+    sys.exit(0)
+path = Path.home() / '.aws/sso/cache' / (hashlib.sha1(key.encode()).hexdigest() + '.json')
+if not path.exists():
+    sys.exit(1)
+try:
+    expires = datetime.fromisoformat(json.loads(path.read_text())['expiresAt'].replace('Z', '+00:00'))
+    sys.exit(0 if expires > datetime.now(timezone.utc) + timedelta(seconds=30) else 1)
+except Exception:
+    sys.exit(1)
+PY
+    then
+        echo "SSOトークンが無効です。aws sso login を実行します..." >&2
         aws sso login --profile "$PROFILE"
         # aws sso loginで開かれたブラウザの承認ページ(device.sso.*.amazonaws.com等)を自動で閉じる
         # osascriptはmacOS専用なので、存在しない環境(Linux等)ではスキップ
