@@ -1,8 +1,8 @@
-tap "scalacenter/bloop"
-tap "railwaycat/emacsmacport"
-tap "hashicorp/tap"
-tap "Virtuslab/scala-cli"
-cask "alacritty"
+tap "scalacenter/bloop", trusted: true
+tap "railwaycat/emacsmacport", trusted: true
+tap "hashicorp/tap", trusted: true
+tap "Virtuslab/scala-cli", trusted: true
+tap "coursier/formulas", trusted: true
 cask "ghostty"
 cask "font-source-code-pro"
 cask "font-fira-code"
@@ -27,7 +27,7 @@ brew "coursier/formulas/coursier" # TODO asdfから移行する
 brew "kubectl"
 brew "kubectx"
 brew "pyenv"
-brew "emacs-mac", args: ["with-modern-icon", "with-imagemagic"]
+brew "emacs-mac", args: ["with-modern-icon", "with-imagemagick"]
 brew "stack"
 brew "markdown"
 brew "rust-analyzer"
@@ -42,3 +42,4 @@ brew "kafka"
 brew "ansible"
 brew "scala-cli"
 brew "sbcl"
+brew "argocd"

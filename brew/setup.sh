@@ -1,4 +1,6 @@
-brew tap Homebrew/bundle
+#!/bin/bash
+set -e
+
 brew bundle --file "brew/Brewfile"
 
 ln -sf /opt/homebrew/opt/emacs-mac/Emacs.app /Applications
