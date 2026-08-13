@@ -9,7 +9,7 @@
     (let ((project-dir (projectile-project-root))
           (file-name (buffer-file-name)))
       (neotree-toggle)
-n      (if project-dir
+      (if project-dir
           (if (neo-global--window-exists-p)
               (progn
                 (neotree-dir project-dir)
@@ -83,5 +83,14 @@ The description of ARG is in `neo-buffer--execute'."
   (interactive)
   (neotree-dir "~/memo"))
 
+
+;; C-x C-f (counsel-find-file) でディレクトリを選んだ場合は dired ではなく neotree で表示する
+(defun neotree-counsel-find-file-directory-advice (orig-fun x)
+  "counsel-find-file の確定対象 X がディレクトリなら neotree のルートを切り替えて表示する."
+  (let ((path (expand-file-name x ivy--directory)))
+    (if (file-directory-p path)
+        (neotree-dir path)
+      (funcall orig-fun x))))
+(advice-add 'counsel-find-file-action :around #'neotree-counsel-find-file-directory-advice)
 
 (provide 'conf-neotree)
