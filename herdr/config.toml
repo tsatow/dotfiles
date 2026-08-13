@@ -1,0 +1,24 @@
+onboarding = false
+# herdr 設定 (~/.config/herdr/config.toml に symlink される)
+# デフォルト全項目は `herdr --default-config` で確認できる
+
+[theme]
+# 外側ターミナル (Ghostty) の配色をそのまま使う
+name = "terminal"
+
+[keys]
+# tmux から引き継ぎ。ペイン内の emacs で C-x が必要になったら要見直し
+# (tmux の send-prefix 相当は herdr にない)
+prefix = "ctrl+x"
+
+# tmux の | 縦分割を追加 (デフォルトの prefix+v も残す)
+split_vertical = ["prefix+v", "prefix+|"]
+
+[ui.toast]
+# バックグラウンドのワークスペースでエージェントが blocked/done になったら
+# アプリ内トーストで通知する
+delivery = "herdr"
+
+# [experimental]
+# 日本語 IME が有効なまま prefix を押すと効かない場合はこれを有効化する
+# switch_ascii_input_source_in_prefix = true
