@@ -1,0 +1,39 @@
+// Zed global tasks. Keybindings in keymap.json spawn these by name
+// (see the "Editor && extension == org" block).
+// "shell": /bin/sh skips the login zsh startup (rc files, prompt init),
+// which otherwise dominates the latency of every key press.
+[
+  {
+    "label": "org-todo-cycle",
+    "command": "$HOME/.local/bin/org-todo",
+    "args": ["cycle", "$ZED_FILE", "$ZED_ROW"],
+    "shell": { "program": "/bin/sh" },
+    "save": "current",
+    "use_new_terminal": true,
+    "allow_concurrent_runs": true,
+    "reveal": "never",
+    "hide": "always"
+  },
+  {
+    "label": "org-todo-cycle-back",
+    "command": "$HOME/.local/bin/org-todo",
+    "args": ["cycle-back", "$ZED_FILE", "$ZED_ROW"],
+    "shell": { "program": "/bin/sh" },
+    "save": "current",
+    "use_new_terminal": true,
+    "allow_concurrent_runs": true,
+    "reveal": "never",
+    "hide": "always"
+  },
+  {
+    "label": "org-checkbox-toggle",
+    "command": "$HOME/.local/bin/org-todo",
+    "args": ["toggle-checkbox", "$ZED_FILE", "$ZED_ROW"],
+    "shell": { "program": "/bin/sh" },
+    "save": "current",
+    "use_new_terminal": true,
+    "allow_concurrent_runs": true,
+    "reveal": "never",
+    "hide": "always"
+  }
+]

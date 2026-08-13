@@ -106,10 +106,10 @@
       ], // kill-word
       "cmd-backspace": "editor::DeleteToPreviousWordStart", // backward-kill-word
       "cmd-delete": "editor::DeleteToPreviousWordStart", // backward-kill-word
-      "ctrl-k": "editor::KillRingCut", // kill-line
+      "ctrl-k": "editor::CutToEndOfLine", // kill-line (uses system clipboard so C-y can paste it)
       "ctrl-w": "editor::Cut", // kill-region
       "cmd-w": "editor::Copy", // kill-ring-save
-      "ctrl-y": "editor::KillRingYank", // yank
+      "ctrl-y": "editor::Paste", // yank (from system clipboard)
       "ctrl-_": "editor::Undo", // undo
       "ctrl-/": "editor::Undo", // undo
       "ctrl-x u": "editor::Undo", // undo
@@ -130,6 +130,25 @@
       "ctrl-r": "buffer_search::Deploy", // isearch-backward
       "cmd-^": "editor::JoinLines", // join-line
       "cmd-q": "editor::Rewrap" // fill-paragraph
+    }
+  },
+  {
+    // org-mode structure editing approximations (requires the "Org Mode" extension for syntax highlighting).
+    // NOTE: shadows word-motion on cmd-left/right in .org files, same as org-mode shadows M-left/right in Emacs.
+    "context": "Editor && extension == org",
+    "bindings": {
+      "cmd-up": "editor::MoveLineUp", // org-metaup (line-wise approximation; Zed can't move whole subtrees)
+      "cmd-down": "editor::MoveLineDown", // org-metadown
+      "cmd-left": "editor::Outdent", // org-metaleft (works for indented list items, not heading stars)
+      "cmd-right": "editor::Indent", // org-metaright
+      // TODO operations are implemented as Zed tasks running the `org-todo` script (dotfiles/zed/org-todo,
+      // registered in zed/tasks.json). The tasks declare `"save": "current"`, which awaits the buffer save
+      // BEFORE spawning — a keymap action::Sequence with workspace::Save does not await and races the script.
+      "ctrl-c ctrl-t": ["task::Spawn", { "task_name": "org-todo-cycle" }], // org-todo
+      "ctrl-c ctrl-c": ["task::Spawn", { "task_name": "org-checkbox-toggle" }], // org-toggle-checkbox
+      // NOTE: shadows shift+arrow character selection in .org files, same as org-shiftright/left in Emacs.
+      "shift-right": ["task::Spawn", { "task_name": "org-todo-cycle" }], // org-shiftright
+      "shift-left": ["task::Spawn", { "task_name": "org-todo-cycle-back" }] // org-shiftleft
     }
   },
   {
@@ -235,6 +254,7 @@
   {
     "context": "Workspace",
     "bindings": {
+      "cmd-w": null, // disable workspace::CloseActiveDock (cmd is Meta; use ctrl-x 0 / ctrl-x k to close)
       "cmd-x": "command_palette::Toggle", // execute-extended-command
       "ctrl-x b": "tab_switcher::Toggle", // switch-to-buffer
       "ctrl-x ctrl-b": "tab_switcher::Toggle", // list-buffers
@@ -269,6 +289,7 @@
       // "ctrl-x": ["terminal::SendKeystroke", "ctrl-x"],
       // "ctrl-n": ["terminal::SendKeystroke", "ctrl-n"],
       // ...
+      "cmd-w": ["terminal::SendKeystroke", "alt-w"], // kill-ring-save: send M-w to terminal instead of closing the tab
       "ctrl-x ctrl-c": null, // save-buffers-kill-terminal
       "ctrl-x ctrl-f": null, // find-file
       "ctrl-x ctrl-s": null, // save-buffer
@@ -287,6 +308,7 @@
   {
     "context": "Pane",
     "bindings": {
+      "cmd-w": null, // disable pane::CloseActiveItem (cmd is Meta; use ctrl-x k to close a buffer)
       "ctrl-alt-left": "pane::GoBack",
       "ctrl-alt-right": "pane::GoForward"
     }

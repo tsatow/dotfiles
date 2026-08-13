@@ -1,0 +1,155 @@
+#!/usr/bin/env python3
+"""Org-mode edits driven by Zed tasks.
+
+Usage: org-todo <cycle|cycle-back|toggle-checkbox> <file> <row>
+
+`row` is 1-based (Zed's $ZED_ROW). Exits 0 silently when the target line is
+not a heading/checkbox, so the hidden Zed task terminal never pops up.
+"""
+import datetime
+import os
+import re
+import sys
+
+FORWARD = {None: "TODO", "TODO": "DONE", "DONE": None}
+BACKWARD = {None: "DONE", "DONE": "TODO", "TODO": None}
+
+HEADING_RE = re.compile(r"^(\*+)\s")
+LIST_ITEM_RE = re.compile(r"^(\s*)(?:[-+*]|\d+[.)])\s")
+CHECKBOX_ITEM_RE = re.compile(r"^(\s*)(?:[-+*]|\d+[.)])\s+\[([ xX-])\]")
+# Statistics cookies: [3/5], [/], [60%], [%]. Does not match checkboxes or timestamps.
+COOKIE_RE = re.compile(r"\[\d*(?:/\d*|%)\]")
+
+
+def log_invocation():
+    """Timing log to diagnose latency between Zed keypress and script execution."""
+    try:
+        log_path = os.path.expanduser("~/.cache/org-todo.log")
+        os.makedirs(os.path.dirname(log_path), exist_ok=True)
+        with open(log_path, "a", encoding="utf-8") as f:
+            timestamp = datetime.datetime.now().isoformat(timespec="milliseconds")
+            f.write(f"{timestamp} {' '.join(sys.argv[1:])}\n")
+    except OSError:
+        pass
+
+
+def cycle_todo(body, order):
+    """Rotate the TODO keyword; forward order is none -> TODO -> DONE -> none."""
+    heading = re.match(r"^(\*+\s+)(.*)$", body)
+    if heading is None:
+        return None
+    prefix, rest = heading.groups()
+    keyword = re.match(r"^(TODO|DONE)(\s+|$)", rest)
+    current = keyword.group(1) if keyword else None
+    title = rest[keyword.end():] if keyword else rest
+    new_keyword = order[current]
+    if new_keyword is None:
+        return prefix + title
+    return f"{prefix}{new_keyword} {title}"
+
+
+def toggle_checkbox(body):
+    checkbox = re.match(r"^(\s*(?:[-+*]|\d+[.)])\s+\[)([ xX-])\]", body)
+    if checkbox is None:
+        return None
+    new_state = "x" if checkbox.group(2) in " -" else " "
+    return body[: checkbox.start(2)] + new_state + body[checkbox.end(2):]
+
+
+def update_statistics(bodies):
+    """Recompute [n/m] / [nn%] cookies, mimicking Emacs' hierarchical statistics:
+    a cookie on a heading counts the top-level checkboxes of its section, a
+    cookie on a list item counts its direct children. Returns True if changed.
+    """
+    changed = False
+    for index, body in enumerate(bodies):
+        if not COOKIE_RE.search(body):
+            continue
+        heading = HEADING_RE.match(body)
+        list_item = None if heading else LIST_ITEM_RE.match(body)
+        scope = []
+        if heading:
+            level = len(heading.group(1))
+            for candidate in bodies[index + 1:]:
+                inner_heading = HEADING_RE.match(candidate)
+                if inner_heading and len(inner_heading.group(1)) <= level:
+                    break
+                scope.append(candidate)
+        elif list_item:
+            base_indent = len(list_item.group(1))
+            for candidate in bodies[index + 1:]:
+                if not candidate.strip():
+                    continue
+                candidate_indent = len(candidate) - len(candidate.lstrip())
+                if HEADING_RE.match(candidate) or candidate_indent <= base_indent:
+                    break
+                scope.append(candidate)
+        else:
+            continue
+
+        matches = (CHECKBOX_ITEM_RE.match(candidate) for candidate in scope)
+        boxes = [(len(m.group(1)), m.group(2)) for m in matches if m]
+        direct = []
+        if boxes:
+            min_indent = min(indent for indent, _ in boxes)
+            direct = [state for indent, state in boxes if indent == min_indent]
+        total = len(direct)
+        checked = sum(1 for state in direct if state in "xX")
+
+        def render_cookie(match):
+            if match.group(0).endswith("%]"):
+                return f"[{checked * 100 // total if total else 0}%]"
+            return f"[{checked}/{total}]"
+
+        new_body = COOKIE_RE.sub(render_cookie, body)
+        if new_body != body:
+            bodies[index] = new_body
+            changed = True
+    return changed
+
+
+def main():
+    log_invocation()
+    if len(sys.argv) != 4:
+        print(__doc__.strip(), file=sys.stderr)
+        return 2
+    mode, path, row_arg = sys.argv[1:4]
+    if mode not in ("cycle", "cycle-back", "toggle-checkbox"):
+        print(f"unknown mode: {mode}", file=sys.stderr)
+        return 2
+
+    try:
+        row = int(row_arg) - 1
+    except ValueError:
+        print(f"invalid row: {row_arg}", file=sys.stderr)
+        return 2
+
+    with open(path, encoding="utf-8") as f:
+        lines = f.readlines()
+    bodies = [line.rstrip("\n") for line in lines]
+    endings = [line[len(body):] for line, body in zip(lines, bodies)]
+
+    changed = False
+    if 0 <= row < len(bodies):
+        if mode == "toggle-checkbox":
+            new_body = toggle_checkbox(bodies[row])
+        else:
+            new_body = cycle_todo(bodies[row], FORWARD if mode == "cycle" else BACKWARD)
+        if new_body is not None and new_body != bodies[row]:
+            bodies[row] = new_body
+            changed = True
+
+    # Always refresh statistics cookies, so C-c C-c on a cookie line
+    # recalculates counts just like org-ctrl-c-ctrl-c does in Emacs.
+    if update_statistics(bodies):
+        changed = True
+
+    if not changed:
+        return 0
+    with open(path, "w", encoding="utf-8") as f:
+        f.writelines(body + ending for body, ending in zip(bodies, endings))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
