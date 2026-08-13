@@ -14,6 +14,11 @@ prefix = "ctrl+x"
 # tmux の | 縦分割を追加 (デフォルトの prefix+v も残す)
 split_vertical = ["prefix+v", "prefix+|"]
 
+[ui.sidebar.agents]
+# 状態アイコンの色だけだと分かりにくいので、状態名 (idle/working/blocked/done) も
+# テキストで併記する
+rows = [["workspace", "tab"], ["agent", "state_icon", "state_text"]]
+
 [ui.toast]
 # バックグラウンドのワークスペースでエージェントが blocked/done になったら
 # アプリ内トーストで通知する
