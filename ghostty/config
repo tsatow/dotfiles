@@ -7,4 +7,6 @@ font-size = 18.0
 window-height = 9999999
 window-width = 9999999
 
-initial-command = /bin/zsh -l -c "tmux a -t 0 || tmux"
+initial-command = /bin/zsh -l -c "herdr"
+
+macos-option-as-alt = true
