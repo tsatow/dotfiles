@@ -86,8 +86,9 @@ emacs:
 	mkdir -p ${PWD}/emacs/.emacs.d/themes
 	curl -o ${PWD}/emacs/.emacs.d/themes/color-theme-tomorrow.el -L https://raw.githubusercontent.com/chriskempson/tomorrow-theme/master/GNU%20Emacs/color-theme-tomorrow.el
 	curl -o ${PWD}/emacs/.emacs.d/themes/tomorrow-night-blue-theme.el -L https://raw.githubusercontent.com/chriskempson/tomorrow-theme/master/GNU%20Emacs/tomorrow-night-blue-theme.el
-	# シンボリックリンクだと読み込まれない
-	cp -rf ${PWD}/emacs/.emacs.d ${HOME}
+	# 既存の実ディレクトリが残っているとln -sfnが失敗するため退避する
+	if [ -d ${HOME}/.emacs.d ] && [ ! -L ${HOME}/.emacs.d ]; then mv ${HOME}/.emacs.d ${HOME}/.emacs.d.bkup; fi
+	ln -sfn ${PWD}/emacs/.emacs.d ${HOME}/.emacs.d
 
 .PHONY: git
 git:
@@ -97,5 +98,9 @@ git:
 zig:
 	${PWD}/zig/setup.sh
 
+.PHONY: herdr
+herdr:
+	${PWD}/herdr/setup.sh
+
 .PHONY: all
-all: $(PKG_MGR) alacritty starship tmux zed java scala haskell rust scripts kubernetes k6 aws terraform emacs git zig $(notdir $(SHELL))
+all: $(PKG_MGR) alacritty ghostty starship tmux zed java scala haskell rust scripts kubernetes k6 aws terraform emacs git zig herdr $(notdir $(SHELL))
