@@ -6,3 +6,5 @@ asdf set -u scala 2.13.9
 
 asdf install sbt 1.6.2
 asdf set -u sbt 1.6.2
+
+cs install metals

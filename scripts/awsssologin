@@ -76,6 +76,6 @@ APPLESCRIPT
     break
 done
 REGION=$(aws configure get region --profile "$PROFILE")
-# zle widgetにBUFFERを渡すもっと良い方法ないですか？
+# 親シェルの環境変数は子プロセスから変更できないため、export文をファイルに書き出し、
+# .zshrc の awsssologin ラッパー関数が eval で取り込む
 echo "export AWS_PROFILE=$PROFILE AWS_DEFAULT_PROFILE=$PROFILE AWS_REGION=$REGION;" > /tmp/ZSH_BUFFER
-tmux send-keys "C-["

@@ -31,7 +31,14 @@
   "formatter": "language_server",
   "buffer_font_family": "zed-mono",
   "preferred_line_length": 1000,
-  "language_overrides": {
+  // Scala development is powered by the scalameta "scala" extension + Metals.
+  // Metals is installed by scala/setup.sh (`cs install metals`); its bin dir
+  // must be on the login-shell PATH (see zsh/.zshrc) or the LSP silently fails.
+  "auto_install_extensions": {
+    "scala": true,
+    "org": true
+  },
+  "languages": {
     "C": {
       "format_on_save": "off",
       "preferred_line_length": 64,
@@ -43,6 +50,29 @@
     "YAML": {
       "tab_size": 2,
       "preferred_line_length": 200
+    },
+    "Scala": {
+      "tab_size": 2,
+      "preferred_line_length": 120,
+      "inlay_hints": {
+        "enabled": true
+      },
+      "semantic_tokens": "combined"
+    }
+  },
+  "lsp": {
+    "metals": {
+      "settings": {
+        "autoImportBuilds": "all",
+        "inlayHints": {
+          "inferredTypes": { "enable": true },
+          "implicitArguments": { "enable": true },
+          "implicitConversions": { "enable": true },
+          "typeParameters": { "enable": true },
+          "byNameParameters": { "enable": true },
+          "hintsInPatternMatch": { "enable": true }
+        }
+      }
     }
   },
   "base_keymap": "Emacs",

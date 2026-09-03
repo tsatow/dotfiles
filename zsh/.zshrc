@@ -9,10 +9,6 @@ export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 export SBT_OPTS='-Xms8g -Xmx12g -Xss8m -XX:MaxMetaspaceSize=1g -XX:ReservedCodeCacheSize=1000m -XX:MaxMetaspaceSize=512m'
 export UPDATE_LATEST=1
 
-# ghq
-# see https://github.com/Songmu/ghq-handbook
-git config --global ghq.root '~/src'
-
 # peco
 function peco-checkout-pull-request () {
     local selected_pr_id=$(gh pr list | peco | awk '{ print $1 }')
@@ -54,18 +50,14 @@ eval "$(pyenv init -)"
 
 # path
 export PATH=$HOME/.local/bin:$PATH
+# coursier apps (metals など)。Zed が Metals を見つけるにはログインシェルの PATH に必要
+export PATH="$PATH:$HOME/Library/Application Support/Coursier/bin"
 
-# zle utilities
-# /tmp/ZSH_BUFFERを経由してシェルスクリプトから任意のコマンドを実行させる
-# 例えばシェルスクリプト内で環境変数を設定したいときに`tmux send-keys C-[`を実行して呼び出す
-function accept-buffer {
-  zle kill-whole-line
-  BUFFER=$(cat /tmp/ZSH_BUFFER)
-  CURSOR=$#BUFFER
-  zle accept-line
+# awsssologin (scripts/awsssologin) のラッパー。
+# スクリプトが /tmp/ZSH_BUFFER に書き出した export 文を呼び出し元シェルに取り込む
+function awsssologin {
+  command awsssologin "$@" && eval "$(cat /tmp/ZSH_BUFFER)"
 }
-zle -N accept-buffer
-bindkey '^[' accept-buffer
 export PATH="/opt/homebrew/opt/mysql-client@8.0/bin:$PATH"
 export PATH="/opt/homebrew/opt/php@8.1/bin:$PATH"
 
