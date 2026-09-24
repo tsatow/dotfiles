@@ -1,20 +1,65 @@
 #!/bin/bash
-email=$(git config --global --get user.email)
-if [ -z "$email" ]; then
-    read -p "INPUT YOUR GITHUB EMAIL ADDRESS: " email
-    git config --global user.email "$email"
+set -eu
+
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+TEMPLATE="$SCRIPT_DIR/.gitconfig.template"
+WORK_TEMPLATE="$SCRIPT_DIR/.gitconfig-work.template"
+
+# 仕事用組織の決定。グローバルは私用アイデンティティ(テンプレートに直書き)で、
+# ~/src/github.com/<org>/ 配下だけ ~/.gitconfig-work の仕事用アイデンティティを includeIf で当てる。
+# 初回(~/.gitconfigが無い)は確認し、2回目以降は既存の includeIf 行から組織名を抽出する。
+# org が空 = このPCでは仕事用アカウントを使わない
+if [ -e ~/.gitconfig ]; then
+    org=$(sed -n 's|^\[includeIf "gitdir:~/src/github.com/\(.*\)/"\]$|\1|p' ~/.gitconfig)
+else
+    read -p "仕事用と私用のgitアカウントを分けますか？ (私用PCなら n) [y/n]: " answer
+    case "$answer" in
+        [yY]*) read -p "INPUT YOUR WORK GITHUB ORG (~/src/github.com/<ORG>/ 配下が仕事用になる): " org ;;
+        *)     org= ;;
+    esac
 fi
 
-(cat $(pwd)/git/.gitconfig | sed "s/<FIXEMAIL>/$email/g") > ~/.gitconfig
+# テンプレートの <FIXORG> を実際の組織名で埋めて出力する。
+# 仕事用を使わない場合は [includeIf] セクションごと除く
+render_gitconfig() {
+    if [ -n "$org" ]; then
+        sed -e "s|<FIXORG>|$org|g" "$TEMPLATE"
+    else
+        awk '/^\[/{skip = ($0 ~ /^\[includeIf /)} !skip' "$TEMPLATE"
+    fi
+}
 
+if [ -e ~/.gitconfig ]; then
+    # テンプレートと差分がある場合は、どちらが正か機械的に判断できないため上書きせずエラーで止める
+    # (組織名は既存ファイルから抽出して埋めるので差分に出ない)
+    if ! diff -u <(render_gitconfig) ~/.gitconfig; then
+        echo "error: git/.gitconfig.template と ~/.gitconfig に差分があります (diff は上記)" >&2
+        echo "  テンプレートか ~/.gitconfig を手で揃えてから make git を再実行してください" >&2
+        exit 1
+    fi
+else
+    render_gitconfig > ~/.gitconfig
+fi
+
+# 仕事用の上書き設定 (~/.gitconfig-work) が無ければ入力させて生成する。
+# 中身は user.name / user.email だけなので、以後の変更は直接編集でよい
+if [ -n "$org" ] && [ ! -e ~/.gitconfig-work ]; then
+    read -p "INPUT YOUR WORK GITHUB USER NAME: " work_name
+    read -p "INPUT YOUR WORK GITHUB EMAIL ADDRESS: " work_email
+    sed -e "s|<FIXNAME>|$work_name|g" -e "s|<FIXEMAIL>|$work_email|g" "$WORK_TEMPLATE" > ~/.gitconfig-work
+fi
+
+email=$(git config --global --get user.email)
 if [ ! -e ~/.ssh/id_ed25519 ]; then
     ssh-keygen -t ed25519 -C "$email"
     # see https://cli.github.com/manual/gh_ssh-key_add
     gh ssh-key add ~/.ssh/id_ed25519.pub --title "$(uname -n) $(uname -o) added at $(date '+%Y-%m-%d %H:%M:%S')"
 fi
 
-# 毎回の入力を避ける
-ssh-add --apple-load-keychain
+# 毎回の入力を避ける (macOSのみ)
+if [ "$(uname)" = "Darwin" ]; then
+    ssh-add --apple-load-keychain
+fi
 
 echo "git setup completed !"
 bat ~/.gitconfig

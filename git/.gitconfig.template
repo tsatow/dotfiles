@@ -2,7 +2,7 @@
 	root = ~/src
 [user]
 	name = tsatow
-	email = <FIXEMAIL>
+	email = t.satoooooooooooo@gmail.com
 [alias]
 	st = status
 	ss = stash
@@ -18,3 +18,5 @@
     ft = fetch
 [pull]
     rebase = false
+[includeIf "gitdir:~/src/github.com/<FIXORG>/"]
+    path = ~/.gitconfig-work
