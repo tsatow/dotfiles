@@ -36,7 +36,9 @@
   // must be on the login-shell PATH (see zsh/.zshrc) or the LSP silently fails.
   "auto_install_extensions": {
     "scala": true,
-    "org": true
+    "org": true,
+    // TOML support (taplo LSP; the extension downloads its own binary)
+    "toml": true
   },
   "languages": {
     "C": {
@@ -58,9 +60,23 @@
         "enabled": true
       },
       "semantic_tokens": "combined"
+    },
+    "Rust": {
+      "preferred_line_length": 100,
+      "inlay_hints": {
+        "enabled": true
+      }
     }
   },
   "lsp": {
+    "rust-analyzer": {
+      "initialization_options": {
+        // Run clippy instead of `cargo check` on save for richer diagnostics
+        "check": {
+          "command": "clippy"
+        }
+      }
+    },
     "metals": {
       "settings": {
         "autoImportBuilds": "all",
