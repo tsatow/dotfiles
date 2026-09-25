@@ -35,15 +35,32 @@ normalize_settings() {
 }
 
 mkdir -p ~/.claude
-if [ -e ~/.claude/settings.json ]; then
-    # 既存の設定と差分がある場合は、どちらが正か機械的に判断できないため上書きせずエラーで止める
-    if ! diff -u <(render_settings | normalize_settings) <(normalize_settings < ~/.claude/settings.json); then
-        echo "error: claude/settings.json(+settings.company.json) と ~/.claude/settings.json に差分があります (diff は上記)" >&2
-        echo "  dotfiles側か ~/.claude/settings.json を手で揃えてから再実行してください" >&2
-        exit 1
-    fi
-else
+if [ ! -e ~/.claude/settings.json ]; then
     render_settings > ~/.claude/settings.json
+elif diff <(render_settings | normalize_settings) <(normalize_settings < ~/.claude/settings.json) > /dev/null; then
+    : # 期待値と一致: 何もしない
+elif [ -e "$SETTINGS_COMPANY" ] &&
+     diff <(jq . "$SETTINGS_BASE" | normalize_settings) <(normalize_settings < ~/.claude/settings.json) > /dev/null; then
+    # 既存がベースのみの内容と一致 = settings.company.json を後から置いたケース。
+    # ローカル編集は無いと分かるので、マージ結果で安全に更新できる
+    render_settings > ~/.claude/settings.json
+    echo "settings.company.json をマージして ~/.claude/settings.json を更新しました"
+else
+    # 上記以外の差分は、どちらが正か機械的に判断できないため diff を見せて確認する
+    diff -u <(render_settings | normalize_settings) <(normalize_settings < ~/.claude/settings.json) >&2 || true
+    echo "claude/settings.json(+settings.company.json) と ~/.claude/settings.json に差分があります (diff は上記)" >&2
+    read -p "dotfiles側の内容で ~/.claude/settings.json を上書きしますか？ (既存は .bkup に退避) [y/N]: " answer || answer=
+    case "$answer" in
+        [yY]*)
+            cp ~/.claude/settings.json ~/.claude/settings.json.bkup
+            render_settings > ~/.claude/settings.json
+            echo "~/.claude/settings.json を上書きしました (旧内容は ~/.claude/settings.json.bkup)"
+            ;;
+        *)
+            echo "error: 中断しました。dotfiles側か ~/.claude/settings.json を手で揃えてから再実行してください" >&2
+            exit 1
+            ;;
+    esac
 fi
 
 # 3. herdr 連携 (SessionStart hook と skill)。
