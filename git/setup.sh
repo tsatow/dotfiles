@@ -52,8 +52,28 @@ fi
 email=$(git config --global --get user.email)
 if [ ! -e ~/.ssh/id_ed25519 ]; then
     ssh-keygen -t ed25519 -C "$email"
-    # see https://cli.github.com/manual/gh_ssh-key_add
-    gh ssh-key add ~/.ssh/id_ed25519.pub --title "$(uname -n) $(uname -o) added at $(date '+%Y-%m-%d %H:%M:%S')"
+fi
+
+# GitHub CLIが未ログインだと鍵の登録ができない (新PCでは未ログイン)
+if ! gh auth status > /dev/null 2>&1; then
+    gh auth login
+fi
+
+# 公開鍵がGitHubに未登録なら登録する (gh ssh-key list はアクティブなアカウントの鍵のみ返す)
+# see https://cli.github.com/manual/gh_ssh-key_add
+if ! gh ssh-key list 2>/dev/null | grep -qF "$(awk '{print $2}' ~/.ssh/id_ed25519.pub)"; then
+    add_output=$(gh ssh-key add ~/.ssh/id_ed25519.pub --title "$(uname -n) $(uname -o) added at $(date '+%Y-%m-%d %H:%M:%S')" 2>&1) || {
+        if echo "$add_output" | grep -qi "already in use"; then
+            # ghのアクティブアカウントとは別のアカウントに登録済みの鍵 (複数アカウント運用時)
+            echo "公開鍵は別のGitHubアカウントで登録済みのためスキップします"
+        else
+            echo "$add_output" >&2
+            echo "error: 公開鍵の登録に失敗しました。権限不足の場合は" >&2
+            echo "  gh auth refresh -h github.com -s admin:public_key" >&2
+            echo "を実行してから make git を再実行してください" >&2
+            exit 1
+        fi
+    }
 fi
 
 # 毎回の入力を避ける (macOSのみ)
