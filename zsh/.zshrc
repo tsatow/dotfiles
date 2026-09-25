@@ -4,6 +4,8 @@ autoload -U +X bashcompinit && bashcompinit
 
 # asdf
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+# JAVA_HOME/JDK_HOMEをasdfのjavaに追随させる (asdf-javaプラグイン提供のフック。make java後に存在する)
+[ -f ~/.asdf/plugins/java/set-java-home.zsh ] && . ~/.asdf/plugins/java/set-java-home.zsh
 
 # SBT
 export SBT_OPTS='-Xms8g -Xmx12g -Xss8m -XX:MaxMetaspaceSize=1g -XX:ReservedCodeCacheSize=1000m -XX:MaxMetaspaceSize=512m'
