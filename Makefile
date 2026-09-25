@@ -102,5 +102,9 @@ zig:
 herdr:
 	${PWD}/herdr/setup.sh
 
+.PHONY: claude
+claude:
+	${PWD}/claude/setup.sh
+
 .PHONY: all
-all: $(PKG_MGR) alacritty ghostty starship tmux zed java scala haskell rust scripts kubernetes k6 aws terraform emacs git zig herdr $(notdir $(SHELL))
+all: claude　$(PKG_MGR) alacritty ghostty starship tmux zed java scala haskell rust scripts kubernetes k6 aws terraform emacs git zig herdr $(notdir $(SHELL))

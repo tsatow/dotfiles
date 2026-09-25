@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit(~/src/**)"
+    ],
+    "deny": [
+      "Read(//Users/tsatow/.ssh/**)"
+    ]
+  },
+  "model": "fable[1m]",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /System/Library/Sounds/Hero.aiff"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /System/Library/Sounds/Glass.aiff"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true
+  },
+  "theme": "dark-daltonized",
+  "defaultMode": "acceptEdits"
+}
