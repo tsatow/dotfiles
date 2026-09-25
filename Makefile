@@ -74,7 +74,7 @@ zsh:
 
 .PHONY: scripts
 scripts:
-	if [ -e ${HOME}/.local/bin ]; then mkdir -p ${HOME}/.local/bin; fi
+	mkdir -p ${HOME}/.local/bin
 	ln -sf ${PWD}/scripts/* ${HOME}/.local/bin
 
 .PHONY: emacs
