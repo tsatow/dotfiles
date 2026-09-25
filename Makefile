@@ -9,6 +9,10 @@ else
 	PKG_MGR=dnf
 endif
 
+# makeのレシピは非ログインシェルで実行されるため、brewでインストールした
+# CLI (asdf, cs 等) が新規マシンではPATHにない。ここで通しておく
+export PATH := /opt/homebrew/bin:/usr/local/bin:$(PATH)
+
 .PHONY: brew
 brew:
 	if ! (type brew > /dev/null 2>&1); then brew/install.sh; fi
