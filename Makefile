@@ -14,10 +14,6 @@ brew:
 	if ! (type brew > /dev/null 2>&1); then brew/install.sh; fi
 	brew/setup.sh
 
-.PHONY: alacritty
-alacritty:
-	${PWD}/alacritty/setup.sh
-
 .PHONY: ghostty
 ghostty:
 	${PWD}/ghostty/setup.sh
@@ -107,4 +103,4 @@ claude:
 	${PWD}/claude/setup.sh
 
 .PHONY: all
-all: claude　$(PKG_MGR) alacritty ghostty starship tmux zed java scala haskell rust scripts kubernetes k6 aws terraform emacs git zig herdr $(notdir $(SHELL))
+all: claude $(PKG_MGR) ghostty starship tmux zed java scala haskell rust scripts kubernetes k6 aws terraform emacs git zig herdr $(notdir $(SHELL))

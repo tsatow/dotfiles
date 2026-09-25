@@ -5,7 +5,6 @@
 # 企業固有のClaude設定 (claude/setup.sh がベース設定にマージする)
 claude/settings.company.json
 
-alacritty/alacritty.yml.example
 zsh/.zshrc.bkup
 emacs/.emacs.d/themes
 Brewfile.lock.json
