@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+
 # make はレシピの各行を新しい非ログインシェルで実行するため、install.sh 直後でも
 # brew にパスが通っていない (~/.zprofile も読まれない)。ここで shellenv を当てる
 if ! type brew > /dev/null 2>&1; then
@@ -12,6 +14,6 @@ if ! type brew > /dev/null 2>&1; then
     done
 fi
 
-brew bundle --file "brew/Brewfile"
+brew bundle --file "$SCRIPT_DIR/Brewfile"
 
 ln -sf /opt/homebrew/opt/emacs-mac/Emacs.app /Applications
