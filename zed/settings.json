@@ -25,14 +25,13 @@
     "dock": "left"
   },
   "theme": "Tomorrow Night Blue",
-  // テーマ(tomorrow-theme)や言語サポートはZedの拡張機能なので、新規マシンでも
-  // 起動時に自動インストールされるようにする
+  // 言語サポートはZedの拡張機能なので、新規マシンでも起動時に自動インストールされる
+  // ようにする (テーマは拡張ではなく zed/themes/tomorrow.json を直接symlinkしている)
   "auto_install_extensions": {
     "html": true,
     "org": true,
     "scala": true,
     "toml": true,
-    "tomorrow-theme": true,
     "zig": true
   },
   "buffer_font_size": 15,
